@@ -112,3 +112,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+dataset/
+*.npy
+*.npy
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/modules.xml
+.idea/misc.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/FlaskApi.iml

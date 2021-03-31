@@ -1,9 +1,10 @@
-from mongoengine import Document, StringField
+from mongoengine import Document, StringField, IntField
 from mongoengine.base.fields import ObjectIdField
+
 
 class Dataset(Document):
     name = StringField(max_length=255, required=True)
-    cate_id = ObjectIdField(required=True)
+    cate_id = IntField(required=True)
     image_url = StringField(max_length=300, required=True)
 
     def to_json(self):

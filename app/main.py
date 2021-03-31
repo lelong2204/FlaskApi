@@ -1,13 +1,13 @@
-from datetime import timedelta
-from flask import Flask, session, request
-from app.controllers import cate_controller
-from app.controllers import auth_controller
-from app.helper.ultis import response
+from flask import Flask, send_from_directory
+from app.controllers.cate_controller import cate_controller
+from app.controllers.auth_controller import auth_controller
+from app.controllers.dataset_controller import dataset_controller
+from app.controllers.train_info_controller import train_info_controller
+from flask_jwt_extended import JWTManager
 import json
-import os
 
-app = Flask(__name__, template_folder='templates')
-with open(os.getcwd() + '/app/config/config.json') as config_file:
+app = Flask(__name__, static_url_path='')
+with open('config/config.json') as config_file:
 	default_config = json.load(config_file)
 
 
@@ -16,18 +16,17 @@ def main(config: dict = None):
 
 	app.secret_key = "flask demo app"
 	app.config.update(default_config)
+	jwt = JWTManager(app)
 	db = MongoEngine(app)
 
-	@app.before_request
-	def make_session_permanent():
-		uncheck_before_request_pages = default_config['uncheck_before_request_pages']
-		session.permanent = True
-		app.permanent_session_lifetime = timedelta(hours=3)
-		if 'Authorization' not in request.headers and request.endpoint not in uncheck_before_request_pages:
-			return response(msg="Unauthorized", status=False, code=401), 401
+	@app.route('/img/<path:path>')
+	def send_js(path):
+		return send_from_directory('img', path)
 
-	app.register_blueprint(cate_controller.cate_controller)
-	app.register_blueprint(auth_controller.auth_controller)
+	app.register_blueprint(cate_controller)
+	app.register_blueprint(auth_controller)
+	app.register_blueprint(dataset_controller)
+	app.register_blueprint(train_info_controller)
 	app.run(debug=True, port=1234)
 
 
