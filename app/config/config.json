@@ -1,0 +1,15 @@
+{
+  "MONGODB_SETTINGS": {
+    "db": "flask_demo",
+    "host": "localhost",
+    "port": 27017
+  },
+  "JWT_SECRET_KEY": "test demo",
+  "ENV": "development",
+  "test_data_folder": "img/test_data",
+  "train_data_folder": "img/train_data",
+  "uncheck_before_request_pages": [
+    "auth_controller.login",
+    "auth_controller.register"
+  ]
+}
