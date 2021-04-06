@@ -26,14 +26,13 @@ def image_to_matrix(cate_list):
     train_label = []
     classes_dir = os.listdir(image_root)
     unix_time = time.time() * 1000000
-    has_file = False
     num_label = 0
     for cls in classes_dir:
         if cls in cate_ids:
             cls_path = image_root + "/" + cls + "/"
             class_list = os.listdir(cls_path)
+            num_label += 1
             for imageName in class_list:
-                has_file = True
                 img_path = cls_path + imageName
                 img = image_utils.load_img(img_path, target_size=(100, 100))
                 # Invert Image
@@ -42,10 +41,6 @@ def image_to_matrix(cate_list):
                 img = image_utils.img_to_array(img)
                 train_data.append(img)
                 train_label.append(int(cls))
-
-            if has_file:
-                num_label += 1
-                has_file = False
 
     if len(train_data) > 0:
         train_data, train_label = shuffle(train_data, train_label)
@@ -78,7 +73,7 @@ def cnn_train(data_np_path, label_np_path, num_classes):
 
     train_data = train_data.reshape(train_data.shape[0], size, size, 3)
 
-    # for example if label is 4 converts it [0,0,0,0,1]
+    # for example if label is 4 converts it [0,0,0,0,0]
     train_label = np_utils.to_categorical(train_label, num_classes)
 
     model = Sequential()
@@ -86,7 +81,7 @@ def cnn_train(data_np_path, label_np_path, num_classes):
     # convolutional layer with 5x5 32 filters and with relu activation function
     # input_shape: shape of the each data
     # kernel_size: size of the filter
-    # strides: default (1,1)
+    # strides: default (0,0)
     # activation: activation function such as "relu","sigmoid"
     model.add(Conv2D(32, kernel_size=(1, 1), input_shape=(size, size, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -110,11 +105,12 @@ def cnn_train(data_np_path, label_np_path, num_classes):
 
     Path('modelsCNN').mkdir(parents=True, exist_ok=True)
     path = f"modelsCNN/{time.time() * 1000000}_hdf51.h5"
-    model.save("modelsCNN/hdf51.h5", overwrite=True, save_format="h5")
+    model.save(path, overwrite=True, save_format="h5")
     return path
 
 
-def predict_image_with_cnn(path, model_path):
+def predict_image_with_cnn(path, model_path="modelsCNN/hdf51.h5"):
+    print(model_path)
     model = load_model(model_path)
     img = image_utils.load_img(path, target_size=(100, 100))  # open an image
     img = PIL.ImageOps.invert(img)  # inverts it
@@ -122,5 +118,4 @@ def predict_image_with_cnn(path, model_path):
     img = img / 255.0
     img = img.reshape(1, img.shape[0], img.shape[1], img.shape[2])
 
-    y = model.predict_classes(img, verbose=0, batch_size=1)
-    return path, classes[y[0]]
+    return model.predict_classes(img, verbose=0, batch_size=1)

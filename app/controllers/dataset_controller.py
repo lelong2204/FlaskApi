@@ -31,8 +31,8 @@ def add_new_dataset():
         unix_time = time.time() * 1000000
         cate = Category.objects.get(cate_id=data['cate_id'])
         train_data_folder = current_app.config['train_data_folder']
-        filename = f'{unix_time}{guess_extension(data_type.split(":")[1])}'
         img_folder = f'{train_data_folder}/{cate.cate_id}'
+        filename = f'{unix_time}{guess_extension(data_type.split(":")[1])}'
         Path(img_folder).mkdir(parents=True, exist_ok=True)
 
         with open(f'{img_folder}/{filename}', 'wb') as f:

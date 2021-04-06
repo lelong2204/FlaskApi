@@ -1,4 +1,5 @@
 from flask import Flask, send_from_directory
+from flask_cors import CORS
 from app.controllers.cate_controller import cate_controller
 from app.controllers.auth_controller import auth_controller
 from app.controllers.dataset_controller import dataset_controller
@@ -7,6 +8,7 @@ from flask_jwt_extended import JWTManager
 import json
 
 app = Flask(__name__, static_url_path='')
+CORS(app)
 with open('config/config.json') as config_file:
 	default_config = json.load(config_file)
 

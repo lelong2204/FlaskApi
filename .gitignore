@@ -121,3 +121,6 @@ dataset/
 .idea/misc.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/FlaskApi.iml
+/app/img
+/app/modelsCNN
+/rain_detect

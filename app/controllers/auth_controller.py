@@ -59,7 +59,7 @@ def login():
         auth_status = user.check_pw_hash(data['password'])
 
         if auth_status:
-            token = create_access_token(identity=user, expires_delta=timedelta(hours=1))
+            token = create_access_token(identity=user, expires_delta=timedelta(hours=24))
             return custom_response("Login Successfully", data={"token": token})
 
         return custom_response('wrong username or password', False)
